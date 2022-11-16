@@ -8,5 +8,6 @@ npm-debug.log*
 
 /target
 
+package-lock.json
 node_modules
 .npm
