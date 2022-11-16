@@ -57,18 +57,18 @@ const asyncDriver = async () => {
 //   console.log('time there', now.tz(timeZones[0]).format('ha'), is5oclock);
 
   const status = (admin_name ?
-    `It's 5 o'clock in ${city}, ${admin_name}, ${iso3}!` :
+    `It's 5 o'clock in ${city}, ${admin_name}, ${country}!` :
     `It's 5 o'clock in ${city}, ${country}!`) + '\n' +
     `${weatherIcon} The weather is ${weatherDesc}, and ${temp}°C` + '\n' +
     (timeDisplay !== '5:00pm' && `(It's actually ${timeDisplay})`);
 
-    console.log('status', status);
+  console.log('status', status);
   const postResult = await M.post('statuses', {
     status: status,
     sensitive: false,
     visibilty: 'public'
   });
- console.log('postResult.data.id', postResult.data.id);
+  console.log('postResult.data.id', postResult.data.id);
 
   const { data: timelineHome } = await M.get('timelines/home', {});
   console.log('timelineHome.length', timelineHome.length);
