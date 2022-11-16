@@ -1,0 +1,12 @@
+.env
+~.env.example
+
+# Logs
+/logs
+*.log
+npm-debug.log*
+
+/target
+
+node_modules
+.npm
