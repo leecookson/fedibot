@@ -60,7 +60,7 @@ const asyncDriver = async () => {
     `It's 5 o'clock in ${city}, ${admin_name}, ${country}!` :
     `It's 5 o'clock in ${city}, ${country}!`) + '\n' +
     `${weatherIcon} The weather is ${weatherDesc}, and ${temp}°C` + '\n' +
-    (timeDisplay !== '5:00pm' && `(It's actually ${timeDisplay})`);
+    (timeDisplay !== '5:00pm' ? `(It's actually ${timeDisplay})` : '');
 
   console.log('status', status);
   const postResult = await M.post('statuses', {
