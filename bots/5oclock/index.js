@@ -58,7 +58,7 @@ const asyncDriver = async () => {
     await drinks.getColdDrink() :
     await drinks.getHotDrink();
 
-    const status = (admin_name ? 
+    const status = (admin_name ?
     `It's 5 o'clock in ${city}, ${admin_name}, ${country}!` :
     `It's 5 o'clock in ${city}, ${country}!`) + '\n' +
     `${weatherIcon} The weather is ${weatherDesc}, and ${temp}°C` + '\n' +
