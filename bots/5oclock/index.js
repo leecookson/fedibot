@@ -83,10 +83,13 @@ const asyncDriver = async () => {
         oldestPost && console.log('oldestPost.id', oldestPost.id);
 
         const deleteResult = await M.delete(`statuses/${oldestPost.id}`, {});
-        console.log('deleteResult.resp.statusCode', deleteResult.resp.statusCode)}
+        console.log('deleteResult.resp.statusCode', deleteResult.resp.statusCode)
       }
     }
   }
+  process.exit(0);
+}
+
 
 asyncDriver();
 
