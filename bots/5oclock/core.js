@@ -2,8 +2,8 @@ const { RETRY_FOR_5OCLOCK } = process.env;
 
 const moment = require('moment-timezone');
 
-const cityGeo = require('../apis/city_geo');
-const timezoneGeo = require('../apis/time_zone_geo');
+const cityGeo = require('../../apis/city_geo');
+const timezoneGeo = require('../../apis/time_zone_geo');
 
 module.exports = {
   findLocation5Oclock: async () => {
@@ -13,14 +13,14 @@ module.exports = {
     while ( maxTries > 0 ) {
         const randomCity = await cityGeo.getRandomCity();
         //console.log('randomCity', randomCity);
-        const {city_ascii: city, country, admin_name, lat, lng } = randomCity;
+        const {lat, lng } = randomCity;
         const timeZones = await timezoneGeo.findTimeZone(lat, lng);
         //console.log('timeZones', timeZones);
 
         const now = (moment(new Date()));
         const timeThere = now.tz(timeZones[0]);
         const is5oclock = timeThere.format('ha') === '5pm';
-        //console.log('time there', now.tz(timeZones[0]).format('ha'), is5oclock);
+        //console.log('time there', now.tz(timeZones[0]).format('ha'), is5oclock, randomCity.city);
 
         if (!result && is5oclock) {
             result = {

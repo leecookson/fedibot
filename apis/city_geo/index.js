@@ -6,7 +6,7 @@ module.exports = {
     return data;
   },
   getRandomCity: async () => {
-    var city = data[Math.floor(Math.random()*data.length)];
+    var city = data[Math.floor(Math.random() * data.length)];
     return city;
   }
 };

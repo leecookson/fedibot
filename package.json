@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "node index.js"
+    "lint": "eslint bots apis",
+    "5oclock": "cd bots/5oclock; node index.js",
+    "pokeweather": "cd bots/pokeweather; node index.js"
   },
   "author": "",
   "license": "ISC",

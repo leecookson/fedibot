@@ -1,17 +1,23 @@
 require('dotenv-safe').config();
+
+//const BOTNAME = '5oclock';
+
 const {
   MASTODON_ACCESS_TOKEN,
   MASTODON_DOMAIN,
-  MASTODON_MAX_POSTS
+  MASTODON_MAX_POSTS,
+  FIVEOCLOCK_COLD_HOT_THRESHOLD
  } = process.env;
 
 const Masto = require('mastodon');
 //const moment = require('moment-timezone');
 
-//const cityGeo = require('./apis/city_geo');
-const weatherGeo = require('./apis/weather_geo');
-//const timezoneGeo = require('./apis/time_zone_geo');
-const city5oclock = require('./5oclock');
+//const cityGeo = require('../../apis/city_geo');
+const weatherGeo = require('../../apis/weather_geo');
+//const timezoneGeo = require('../../apis/time_zone_geo');
+const drinks = require('../../apis/drinks');
+
+const core = require('./core');
 
 //const OAuth2 = require('oauth').OAuth2;
 
@@ -30,7 +36,7 @@ const M = new Masto({
 const asyncDriver = async () => {
 //  const randomCity = await cityGeo.getRandomCity();
 //  console.log('randomCity', randomCity);
-  const city5 = await city5oclock.findLocation5Oclock();
+  const city5 = await core.findLocation5Oclock();
   console.log('city5', city5);
 
   if (!city5) {
@@ -38,7 +44,7 @@ const asyncDriver = async () => {
     process.exit(-1);
   }
 
-  const {city_ascii: city, country, iso2, iso3, admin_name, lat, lng, timeZone, timeThere } = city5;
+  const {city_ascii: city, country, /*iso2, iso3, timeZone,*/ admin_name, lat, lng, timeThere } = city5;
   const timeDisplay = timeThere.format('h:mma');
 
   const { data: weather } = await weatherGeo.getWeather(lat, lng);
@@ -48,19 +54,16 @@ const asyncDriver = async () => {
 
   console.log('weather', weather);
 
-  //   const timeZones = await timezoneGeo.findTimeZone(lat, lng);
-//   console.log('timeZones', timeZones);
+  const drink = temp > FIVEOCLOCK_COLD_HOT_THRESHOLD ?
+    await drinks.getColdDrink() :
+    await drinks.getHotDrink();
 
-//   const now = (moment(new Date()));
-//   const timeThere = now.tz(timeZones[0]);
-//   const is5oclock = timeThere.format('ha') === '5pm';
-//   console.log('time there', now.tz(timeZones[0]).format('ha'), is5oclock);
-
-  const status = (admin_name ?
+    const status = (admin_name ? 
     `It's 5 o'clock in ${city}, ${admin_name}, ${country}!` :
     `It's 5 o'clock in ${city}, ${country}!`) + '\n' +
     `${weatherIcon} The weather is ${weatherDesc}, and ${temp}°C` + '\n' +
-    (timeDisplay !== '5:00pm' ? `(It's actually ${timeDisplay})` : '');
+    (timeDisplay !== '5:00pm' ? `(It's actually ${timeDisplay})` : '') + '\n' +
+    `If you're thirsty, try a ${drink}`;
 
   console.log('status', status);
   const postResult = await M.post('statuses', {

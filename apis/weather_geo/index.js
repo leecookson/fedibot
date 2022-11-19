@@ -16,25 +16,23 @@ const api = module.exports = {
     if (!weather || !weather.weather || !weather.weather[0].main) return '';
     const weatherData = weather.weather[0];
     const mainWeather = weatherData.main;
-    let wind = '';
-
-    if (weather.wind && weather.wind.speed && weather.wind.speed > WINDY_MINIMUM) {
-      wind = '🌬';
-    }
+    const windType = api.getWindType(weather.wind.speed);
+    console.log('windType', windType, weather.wind.speed);
+    const windIcon = api.getWindIcon(windType);
 
     switch (mainWeather) {
       case 'Clear':
-        return wind + '☀';
+        return windIcon + '☀';
       case 'Rain':
-        return wind + api.getRainIcon(weather.rain);
+        return windIcon + api.getRainIcon(weather.rain);
       case 'Thunderstorm':
         return '⛈';
       case 'Drizzle':
-        return wind + '🌧';
+        return windIcon + '🌧';
       case 'Clouds':
-        return wind + api.getCloudyIcon(weather.clouds);
+        return windIcon + api.getCloudyIcon(weather.clouds);
       case 'Snow':
-        return wind + api.getSnowIcon(weather.snow);
+        return windIcon + api.getSnowIcon(weather.snow);
       case 'Tornado':
         return '🌪';
       case 'Mist':
@@ -44,7 +42,7 @@ const api = module.exports = {
       case 'Sand':
       case 'Dust':
       case 'Ash':
-        return wind + '🌫';
+        return windIcon + '🌫';
       default:
         return '';
     }
@@ -67,5 +65,23 @@ const api = module.exports = {
     if (!snow) return '';
     if (snow['1h'] > 2.0) return '❄';
     return '☁';
+  },
+  getWindType: (windSpeed) => {
+    if (windSpeed < 1.5) return 'calm';
+    if (windSpeed < 8.0) return 'breezy';
+    if (windSpeed < 17) return 'windy';
+    if (windSpeed < 28) return 'gale';
+    if (windSpeed < 32) return 'storm';
+    return "hurricane"
+  },
+  getWindIcon: (windType) => {
+    switch (windType) {
+      case 'calm': return '';
+      case 'breezy': return '';
+      case 'windy': return '💨';
+      case 'gale': return '🌬';
+      case 'storm': return '⛈';
+      case 'hurricane': return '🌪';
+    }
   }
 };

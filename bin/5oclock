@@ -1,0 +1,10 @@
+#!/bin/bash
+
+fedibotHome=$HOME/fedibot
+# used RPM to install node 16
+NODE=/usr/bin/node
+NPM= /usr/bin/npm
+
+cd $fedibotHome
+
+nice ${NPM} run 5oclock
