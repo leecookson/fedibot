@@ -1,12 +1,16 @@
-const data = require('../../data/worldcities.json');
-console.log('city count', data.length);
+import { readFileSync } from 'fs'
+const cities = readFileSync(new URL('../../data/worldcities.json', import.meta.url));
 
-module.exports = {
+console.log('city count', cities.length);
+
+const api = {
   getCities: async () => {
-    return data;
+    return cities;
   },
   getRandomCity: async () => {
-    var city = data[Math.floor(Math.random() * data.length)];
+    var city = cities[Math.floor(Math.random() * cities.length)];
     return city;
   }
 };
+
+export default api;

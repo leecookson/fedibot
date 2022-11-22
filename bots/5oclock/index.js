@@ -1,6 +1,3 @@
-require('dotenv-safe').config();
-
-//const BOTNAME = '5oclock';
 
 const {
   MASTODON_ACCESS_TOKEN,
@@ -9,31 +6,20 @@ const {
   FIVEOCLOCK_COLD_HOT_THRESHOLD
  } = process.env;
 
-const Masto = require('mastodon');
-//const moment = require('moment-timezone');
+import { login } from 'masto';
 
-//const cityGeo = require('../../apis/city_geo');
-const weatherGeo = require('../../apis/weather_geo');
-//const timezoneGeo = require('../../apis/time_zone_geo');
-const drinks = require('../../apis/drinks');
+import weatherGeo from '../../apis/weather_geo/index.js';
+import drinks from '../../apis/drinks/index.js';
 
-const core = require('./core');
-
-//const OAuth2 = require('oauth').OAuth2;
-
-// const oauth = new OAuth2('your_client_id', 'your_client_secret', 'https://mastodon.social', null, '/oauth/token');
-// const url = oauth.getAuthorizeUrl({ redirect_uri: 'urn:ietf:wg:oauth:2.0:oob', response_type: 'code', scope: 'read write follow' });
-// // Get the user to open up the url in their browser and get the code
-
-// oauth.getOAuthAccessToken('code from the authorization page that user should paste into your app', { grant_type: 'authorization_code', redirect_uri: 'urn:ietf:wg:oauth:2.0:oob' }, function(err, accessToken, refreshToken, res) { console.log(accessToken); })
-
-const M = new Masto({
-  access_token: MASTODON_ACCESS_TOKEN,
-  timeout_ms: 60*1000,  // optional HTTP request timeout to apply to all requests.
-  api_url: `https://${MASTODON_DOMAIN}/api/v1/`, // optional, defaults to https://mastodon.social/api/v1/
-})
+import core from './core.js';
 
 const asyncDriver = async () => {
+    const masto = await login({
+    url: `https://${MASTODON_DOMAIN}`,
+    timeout_ms: 60*1000,  // optional HTTP request timeout to apply to all requests.
+    accessToken: MASTODON_ACCESS_TOKEN
+  });
+
 //  const randomCity = await cityGeo.getRandomCity();
 //  console.log('randomCity', randomCity);
   const city5 = await core.findLocation5Oclock();
@@ -52,6 +38,8 @@ const asyncDriver = async () => {
   const temp = Math.round(weather.main.temp);
   const weatherIcon = weatherGeo.getWeatherTypeIcon(weather);
 
+  const googleMapsUrl = `https://maps.google.com?q=${lat},${lng}&z=3`;
+
   console.log('weather', weather);
 
   const drink = temp > FIVEOCLOCK_COLD_HOT_THRESHOLD ?
@@ -63,28 +51,28 @@ const asyncDriver = async () => {
     `It's 5 o'clock in ${city}, ${country}!`) + '\n' +
     `${weatherIcon} The weather is ${weatherDesc}, and ${temp}°C` + '\n' +
     (timeDisplay !== '5:00pm' ? `(It's actually ${timeDisplay})` : '') + '\n' +
-    `If you're thirsty, try a ${drink}`;
+    `If you're thirsty, try a ${drink}` + '\n' +
+    `${googleMapsUrl}`;
 
   console.log('status', status);
-  const postResult = await M.post('statuses', {
+  const postResult = await masto.statuses.create({
     status: status,
     sensitive: false,
-    visibilty: 'public'
+    visibility: 'public',
   });
-  console.log('postResult.data.id', postResult.data.id);
+  console.log('postResult.id', postResult.id);
 
-  const { data: timelineHome } = await M.get('timelines/home', {});
+  const { value: timelineHome } = await masto.timelines.fetchHome({local: true});
   console.log('timelineHome.length', timelineHome.length);
 
   if (timelineHome.length > MASTODON_MAX_POSTS) {
     for (let pIndex = timelineHome.length; pIndex > MASTODON_MAX_POSTS; pIndex--) {
       const oldestPost = timelineHome[pIndex - 1];
-      if (oldestPost.id) {
+      if (oldestPost.id) { // TODO: check this matches this account only
         oldestPost && console.log('oldestPost.id', oldestPost.id);
 
-        const deleteResult = await M.delete(`statuses/${oldestPost.id}`, {});
-        console.log('deleteResult.resp.statusCode', deleteResult.resp.statusCode)
-      }
+        const deleteResult = await masto.statuses.remove(`${oldestPost.id}`);
+        console.log('deleteResult.id', deleteResult.id);      }
     }
   }
   process.exit(0);

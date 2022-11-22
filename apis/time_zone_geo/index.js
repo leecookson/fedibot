@@ -1,7 +1,9 @@
-const { find } = require('geo-tz');
+import { find } from 'geo-tz';
 
-module.exports = {
+const api = {
   findTimeZone: async (lat, lng) => {
     return find(lat, lng);
   }
 };
+
+export default api;

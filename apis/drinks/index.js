@@ -1,8 +1,9 @@
-const coldDrinks = require('../../data/cold_drinks.json');
-const hotDrinks = require('../../data/hot_drinks.json');
+import { readFileSync } from 'fs'
+const coldDrinks = readFileSync(new URL('../../data/cold_drinks.json', import.meta.url));
+const hotDrinks = readFileSync(new URL('../../data/hot_drinks.json', import.meta.url));
 console.log('drink counts', coldDrinks.length, hotDrinks.length);
 
-module.exports = {
+const drinks = {
   getColdDrink: async () => {
     return coldDrinks[Math.floor(Math.random() * coldDrinks.length)];
   },
@@ -10,3 +11,5 @@ module.exports = {
     return hotDrinks[Math.floor(Math.random() * hotDrinks.length)];
   }
 };
+
+export default drinks;

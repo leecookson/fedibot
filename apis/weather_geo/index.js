@@ -1,9 +1,9 @@
 
-const { OPEN_API_KEY, WINDY_MINIMUM } = process.env;
+const { OPEN_API_KEY  } = process.env;
 
-const axios = require('axios');
+import axios from 'axios';
 
-const api = module.exports = {
+const api = {
   getWeather: async (lat, lng) => {
     const options = {
       method: 'GET',
@@ -50,7 +50,7 @@ const api = module.exports = {
   getCloudyIcon: (clouds) => {
     //console.log('CLOUDS', clouds);
     if (!clouds) return '☀';
-    if (clouds.all > 80) return '☁';
+    if (clouds.all >= 50) return '☁';
     if (clouds.all > 20) return '🌤';
     return '☀';
   },
@@ -85,3 +85,5 @@ const api = module.exports = {
     }
   }
 };
+
+export default api;

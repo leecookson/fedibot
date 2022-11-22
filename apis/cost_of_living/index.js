@@ -1,7 +1,7 @@
 
 const { RAPID_API_KEY, RAPID_API_HOST } = process.env;
 
-const axios = require('axios');
+import axios from 'axios';
 
 const options = {
   method: 'GET',
@@ -12,8 +12,10 @@ const options = {
   }
 };
 
-module.exports = {
+const api = {
   getCountries: async () => {
     return axios.request(options);
   }
-}
+};
+
+export default api;
