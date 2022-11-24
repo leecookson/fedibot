@@ -13,15 +13,15 @@ const core  = {
 
     while ( maxTries > 0 ) {
       const randomCity = cityGeo.getRandomCity();
-      console.log('randomCity', randomCity);
-      const {lat, lng } = randomCity;
+      // console.log('randomCity', randomCity);
+      const { lat, lng } = randomCity;
       const timeZones = timezoneGeo.findTimeZone(lat, lng);
-      console.log('timeZones', timeZones);
+      // console.log('timeZones', timeZones);
 
       const now = (moment(new Date()));
       const timeThere = now.tz(timeZones[0]);
       const is5oclock = timeThere.format('ha') === '5pm';
-      console.log('time there', now.tz(timeZones[0]).format('ha'), is5oclock, randomCity.city);
+      // console.log('time there', now.tz(timeZones[0]).format('ha'), is5oclock, randomCity.city);
 
       if (!result && is5oclock) {
         result = {
