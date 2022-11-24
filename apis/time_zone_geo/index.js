@@ -1,7 +1,7 @@
 import { find } from 'geo-tz';
 
 const api = {
-  findTimeZone: async (lat, lng) => {
+  findTimeZone: (lat, lng) => {
     return find(lat, lng);
   }
 };

@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-unused-vars
+import dotenv from 'dotenv-safe/config.js';
 
 const {
   MASTODON_ACCESS_TOKEN,
@@ -6,23 +8,22 @@ const {
   FIVEOCLOCK_COLD_HOT_THRESHOLD
  } = process.env;
 
-import { login } from 'masto';
+import Mastodon from 'mastodon';
 
 import weatherGeo from '../../apis/weather_geo/index.js';
 import drinks from '../../apis/drinks/index.js';
 
 import core from './core.js';
 
-const asyncDriver = async () => {
-    const masto = await login({
-    url: `https://${MASTODON_DOMAIN}`,
-    timeout_ms: 60*1000,  // optional HTTP request timeout to apply to all requests.
-    accessToken: MASTODON_ACCESS_TOKEN
-  });
+const M = new Mastodon({
+  access_token: MASTODON_ACCESS_TOKEN,
+  timeout_ms: 60*1000,  // optional HTTP request timeout to apply to all requests.
+  api_url: `https://${MASTODON_DOMAIN}/api/v1/`, // optional, defaults to https://mastodon.social/api/v1/
+})
 
-//  const randomCity = await cityGeo.getRandomCity();
-//  console.log('randomCity', randomCity);
-  const city5 = await core.findLocation5Oclock();
+const asyncDriver = async () => {
+
+  const city5 = core.findLocation5Oclock();
   console.log('city5', city5);
 
   if (!city5) {
@@ -55,14 +56,14 @@ const asyncDriver = async () => {
     `${googleMapsUrl}`;
 
   console.log('status', status);
-  const postResult = await masto.statuses.create({
+  const { data: postResult } = await M.post('statuses', {
     status: status,
     sensitive: false,
-    visibility: 'public',
+    visibilty: 'public'
   });
   console.log('postResult.id', postResult.id);
 
-  const { value: timelineHome } = await masto.timelines.fetchHome({local: true});
+  const { data: timelineHome } = await M.get('timelines/home', {});
   console.log('timelineHome.length', timelineHome.length);
 
   if (timelineHome.length > MASTODON_MAX_POSTS) {
@@ -71,8 +72,9 @@ const asyncDriver = async () => {
       if (oldestPost.id) { // TODO: check this matches this account only
         oldestPost && console.log('oldestPost.id', oldestPost.id);
 
-        const deleteResult = await masto.statuses.remove(`${oldestPost.id}`);
-        console.log('deleteResult.id', deleteResult.id);      }
+        const deleteResult = await M.delete(`statuses/${oldestPost.id}`, {});
+        console.log('deleteResult.resp.statusCode', deleteResult.resp.statusCode);
+      }
     }
   }
   process.exit(0);

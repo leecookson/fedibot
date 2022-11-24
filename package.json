@@ -7,8 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint bots apis",
-    "5oclock": "cd bots/5oclock; node -r dotenv-safe/config index.js",
-    "pokeweather": "cd bots/pokeweather; node -r dotenv-safe/config index.js"
+    "5oclock": "cd bots/5oclock; node index.js",
+    "pokeweather": "cd bots/pokeweather; node index.js"
   },
   "engines": {
     "node": "16"
@@ -16,16 +16,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-location": "^3.216.0",
-    "axios": "^1.2.0",
-    "dotenv-safe": "^8.2.0",
-    "geo-tz": "^7.0.5",
-    "masto": "^4.6.6",
-    "mastodon": "^1.2.2",
-    "moment-timezone": "^0.5.39",
-    "oauth": "^0.10.0"
-  },
-  "devDependencies": {
-    "eslint-plugin-react": "^7.31.11"
+    "axios": "1.1.3",
+    "dotenv-safe": "8.2.0",
+    "geo-tz": "7.0.5",
+    "masto": "4.6.6",
+    "mastodon": "1.2.2",
+    "mastodon-api": "1.3.0",
+    "moment-timezone": "0.5.39"
   }
 }

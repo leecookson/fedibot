@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs'
-const coldDrinks = readFileSync(new URL('../../data/cold_drinks.json', import.meta.url));
-const hotDrinks = readFileSync(new URL('../../data/hot_drinks.json', import.meta.url));
+const coldDrinks = JSON.parse(readFileSync(new URL('../../data/cold_drinks.json', import.meta.url)));
+const hotDrinks = JSON.parse(readFileSync(new URL('../../data/hot_drinks.json', import.meta.url)));
 console.log('drink counts', coldDrinks.length, hotDrinks.length);
 
 const drinks = {
