@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-unused-vars
+import dotenv from 'dotenv-safe/config.js';
 
 import { login } from 'masto';
 
@@ -23,3 +25,5 @@ const streamer = {
 }
 
 export default streamer;
+
+streamer.listen();
