@@ -78,7 +78,7 @@ const core = {
       }
 
       if (id >= 200 && id < 300) return 'EXTREME';
-      if ((id >= 300 && id <= 400) || (id >= 500 && id < 600)) return 'RAIN';
+      if ((id >= 300 && id <= 400) || (id >= 500 && id < 600)) return 'RAINY';
       if ((id >= 600 && id <= 700) || (id >= 500 && id < 600)) return 'SNOW';
       if (id === 800) return 'CLEAR';
       if (id === 801 || id === 802) return 'PARTLY_CLOUDY';
