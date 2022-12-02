@@ -21,6 +21,12 @@ const M = new Mastodon({
   api_url: `https://${MASTODON_DOMAIN}/api/v1/`, // optional, defaults to https://mastodon.social/api/v1/
 })
 
+function convertToF(celsius) {
+  let fahrenheit = celsius * 9/5 + 32
+  // return the variable fahrenheit as the answer
+  return fahrenheit;
+}
+
 const asyncDriver = async () => {
 
   const city5 = core.findLocation5Oclock();
@@ -37,6 +43,7 @@ const asyncDriver = async () => {
   const { data: weather } = await weatherGeo.getWeather(lat, lng);
   const weatherDesc = weather.weather[0].description;
   const temp = Math.round(weather.main.temp);
+  const tempF = Math.floor(convertToF(temp));
   const weatherIcon = weatherGeo.getWeatherTypeIcon(weather);
 
   const googleMapsUrl = `https://maps.google.com?q=${lat},${lng}&z=3`;
@@ -50,7 +57,7 @@ const asyncDriver = async () => {
     const status = (admin_name ?
     `It's 5 o'clock in ${city}, ${admin_name}, ${country}!` :
     `It's 5 o'clock in ${city}, ${country}!`) + '\n' +
-    `${weatherIcon} The weather is ${weatherDesc}, and ${temp}°C` + '\n' +
+    `${weatherIcon} The weather is ${weatherDesc}, and ${temp}°C / ${tempF}°F` + '\n' +
     (timeDisplay !== '5:00pm' ? `(It's actually ${timeDisplay})` : '') + '\n' +
     `If you're thirsty, try a ${drink}` + '\n' +
     `${googleMapsUrl}`;

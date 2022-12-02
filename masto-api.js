@@ -9,13 +9,13 @@ var M = new Mastodon({
 const stream = M.stream('streaming/user')
 
 stream.on('message', (msg) => {
-    console.log(msg)
+    console.log(msg);
 })
 
 stream.on('error', (err) => {
-    console.log(err)
+    console.log(err);
 })
 
 stream.on('heartbeat', (msg) => {
-    console.log('thump.')
+    console.log('thump.', msg);
 })
