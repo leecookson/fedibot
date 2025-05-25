@@ -6,7 +6,7 @@ async function main() {
 
   const masto = await login({
     url: 'https://mastodon.cloud',
-    accessToken: '7WIi1DRssJ41g6snfytAx3tHqnb-2hm2O9czTI0pV8s'
+    accessToken: process.env.MASTODON_ACCESS_KEY
   });
 
   console.log('masto', masto);
